@@ -1,0 +1,75 @@
+<tui-root>
+  <div class="main-container">
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>Notes</h1>
+      </div>
+      <div class="sidebar-content">
+        <tui-island>
+          <h2 class="sidebar-text">Добавить новую заметку</h2>
+          <form [formGroup]="noteForm" (ngSubmit)="addNote()">
+            <div class="form-field">
+              <tui-input
+                formControlName="title"
+                tuiHintContent="Введите заголовок заметки"
+                [tuiTextfieldCleaner]="true"
+              >
+                Заголовок
+              </tui-input>
+            </div>
+            <div class="form-field">
+              <tui-textarea
+                formControlName="content"
+                tuiHintContent="Введите содержимое заметки"
+                [tuiTextfieldCleaner]="true"
+              >
+                Содержимое
+              </tui-textarea>
+              <div class="toggle-container">
+                <tui-toggle
+                  [ngModel]="isApiService"
+                  (ngModelChange)="switchServiceType($event)"
+                  class="custom-toggle"
+                  size="l"
+                  [ngModelOptions]="{ standalone: true }"
+                ></tui-toggle>
+                <label class="toggle-label">
+                  {{
+                    isApiService ? 'Используем API' : 'Используем Local Storage'
+                  }}
+                </label>
+              </div>
+            </div>
+            <div class="form-field">
+              <button
+                tuiButton
+                type="submit"
+                [disabled]="noteForm.invalid"
+                fullWidth
+              >
+                Добавить заметку
+              </button>
+            </div>
+          </form>
+        </tui-island>
+      </div>
+    </div>
+    <div class="content">
+      <h1>Ваши заметки</h1>
+      <ng-container *tuiLet="notes$ | async as notes">
+        <div class="notes-list" *ngIf="notes && notes.length > 0; else noNotes">
+          <tui-island *ngFor="let note of notes">
+            <h3>{{ note.title }}</h3>
+            <p>{{ note.content }}</p>
+            <div class="note-footer">
+              {{ note.date | date: 'short' }}
+            </div>
+          </tui-island>
+        </div>
+      </ng-container>
+      <ng-template #noNotes>
+        <p class="form-field">Нет доступных заметок</p>
+      </ng-template>
+    </div>
+  </div>
+</tui-root>
